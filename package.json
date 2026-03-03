@@ -1,0 +1,16 @@
+{
+  "name": "kriya-app",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev -w @kriya/web",
+    "build": "npm run build -w @kriya/web",
+    "start": "npm run start -w @kriya/web",
+    "lint": "npm run lint -w @kriya/web",
+    "db:migrate": "npm run db:migrate -w @kriya/db",
+    "db:seed": "npm run db:seed -w @kriya/db"
+  }
+}

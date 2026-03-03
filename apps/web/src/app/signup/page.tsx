@@ -1,0 +1,3 @@
+"use client";
+import { useState } from "react";
+export default function Signup() { const [email,setEmail]=useState(''); const [password,setPassword]=useState(''); async function go(){await fetch('/api/auth/signup',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({email,password})}); alert('Signed up pending admin approval');} return <main><h1>Signup</h1><div className='card'><input value={email} onChange={e=>setEmail(e.target.value)} placeholder='email'/><input type='password' value={password} onChange={e=>setPassword(e.target.value)} placeholder='password'/><button onClick={go}>Create account</button></div></main>; }
