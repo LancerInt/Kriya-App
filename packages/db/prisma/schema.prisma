@@ -1,0 +1,116 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  PUBLIC
+  USER
+  ADMIN
+}
+
+enum UserStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum AssetType {
+  IMAGE
+  PDF
+  VIDEO
+}
+
+enum ProductAssetKind {
+  GALLERY
+  BROCHURE
+  TDS
+  CERTIFICATE
+  VIDEO
+  PACKING_PHOTO
+}
+
+model User {
+  id           String     @id @default(cuid())
+  email        String     @unique
+  passwordHash String
+  role         Role       @default(USER)
+  status       UserStatus @default(PENDING)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+}
+
+model Category {
+  id        String   @id @default(cuid())
+  slug      String   @unique
+  nameI18n  Json
+  sortOrder Int      @default(0)
+  products  Product[]
+}
+
+model Product {
+  id              String         @id @default(cuid())
+  categoryId      String
+  category        Category       @relation(fields: [categoryId], references: [id])
+  slug            String         @unique
+  nameI18n        Json
+  descriptionI18n Json
+  microbialI18n   Json
+  cropsTags       String[]
+  pestTags        String[]
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  assets          ProductAsset[]
+}
+
+model Asset {
+  id          String         @id @default(cuid())
+  type        AssetType
+  storageKey  String
+  mimeType    String
+  sizeBytes   Int
+  isPublic    Boolean        @default(false)
+  createdAt   DateTime       @default(now())
+  productRefs ProductAsset[]
+}
+
+model ProductAsset {
+  id        String           @id @default(cuid())
+  productId String
+  assetId   String
+  kind      ProductAssetKind
+  metaJson  Json
+  sortOrder Int              @default(0)
+  product   Product          @relation(fields: [productId], references: [id])
+  asset     Asset            @relation(fields: [assetId], references: [id])
+
+  @@index([productId, kind])
+}
+
+model FacilityContent {
+  id          String   @id @default(cuid())
+  key         String   @unique
+  contentI18n Json
+  assetsJson  Json
+  updatedAt   DateTime @updatedAt
+}
+
+model Lead {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  company   String?
+  phone     String?
+  region    String
+  country   String
+  productId String?
+  qty       String
+  message   String
+  createdAt DateTime @default(now())
+
+  @@index([region, country, createdAt])
+}
