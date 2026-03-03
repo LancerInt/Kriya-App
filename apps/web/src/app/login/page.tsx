@@ -1,0 +1,3 @@
+"use client";
+import { useState } from "react";
+export default function Login() { const [email,setEmail]=useState(''); const [password,setPassword]=useState(''); async function go(){await fetch('/api/auth/login',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({email,password})}); alert('Logged in');} return <main><h1>Login</h1><div className='card'><input value={email} onChange={e=>setEmail(e.target.value)} placeholder='email'/><input type='password' value={password} onChange={e=>setPassword(e.target.value)} placeholder='password'/><button onClick={go}>Login</button></div></main>; }
